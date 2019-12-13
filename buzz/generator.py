@@ -1,7 +1,7 @@
 import requests
 import json
 from requests.auth import HTTPBasicAuth
-import config
+from buzz import config
 
 
 def construct_url(repo, path, name):
