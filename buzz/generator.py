@@ -1,19 +1,22 @@
 import requests
 import json
 from requests.auth import HTTPBasicAuth
-from buzz import config
+
+api_url = 'http://34.70.250.255//artifactory/api/{}'
+username = 'admin'
+password = 'X4HDz9PYEq'
 
 
 def construct_url(repo, path, name):
     file_stats_path = 'storage/{}?stats'.format(repo + '/' + path + '/' + name)
-    return config.api_url.format(file_stats_path)
+    return api_url.format(file_stats_path)
 
 
 def get_maven_artifacts():
     data = 'items.find({"repo":{"$eq":"jcenter-cache"}})'
     results = []
     try:
-        r = requests.post(url=config.api_url.format('search/aql/'), data=data, auth=HTTPBasicAuth(config.username, config.password))
+        r = requests.post(url=api_url.format('search/aql/'), data=data, auth=HTTPBasicAuth(username, password))
         results = json.loads(r.content)['results']
     except Exception as e:
         print (e)
@@ -26,7 +29,7 @@ def get_file_stats_for_artifacts():
     for item in artifacts:
         new_url = construct_url(item['repo'], item['path'], item['name'])
         try:
-            resp = requests.get(url=new_url, auth=HTTPBasicAuth(config.username, config.password), timeout=5)
+            resp = requests.get(url=new_url, auth=HTTPBasicAuth(username, password), timeout=5)
             content = json.loads(resp.content)
         except Exception as e:
             print (e)
@@ -46,6 +49,7 @@ def main():
     first, second = get_most_popular_artifacts(filtered_list)
     print (first)
     print (second)
+    return first
 
 if __name__ == "__main__":
     main()
