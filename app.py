@@ -1,13 +1,13 @@
 import os
 from flask import Flask
-from buzz import generator
+from popular_artifacts import popular_artifact_generator
 
 app = Flask(__name__)
 
 @app.route("/")
 def generate_buzz():
     page = '<html><body><p>'
-    first, second = generator.main()
+    first, second = popular_artifact_generator.main()
     page += str(first)
     page += '</p><p>'
     page += str(second)
