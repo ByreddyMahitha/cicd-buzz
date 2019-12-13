@@ -49,7 +49,7 @@ def main():
     first, second = get_most_popular_artifacts(filtered_list)
     print (first)
     print (second)
-    return first
+    return first, second
 
 if __name__ == "__main__":
     main()

@@ -6,9 +6,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def generate_buzz():
-    page = '<html><body><h1>'
-    page += str(generator.main())
-    page += '</h1></body></html>'
+    page = '<html><body><p>'
+    first, second = generator.main()
+    page += str(first)
+    page += '</p><p>'
+    page += str(second)
+    page += '</p></body></html>'
     return page
 
 if __name__ == "__main__":
