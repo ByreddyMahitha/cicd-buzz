@@ -2,17 +2,18 @@ import requests
 import json
 from requests.auth import HTTPBasicAuth
 
+# can be moved to config files to decouple
 api_url = 'http://34.70.250.255//artifactory/api/{}'
 username = 'admin'
 password = 'X4HDz9PYEq'
 
 
-def construct_url(repo, path, name):
-    file_stats_path = 'storage/{}?stats'.format(repo + '/' + path + '/' + name)
-    return api_url.format(file_stats_path)
-
-
 def get_maven_artifacts():
+    """
+    Gets list of all artifacts for maven repository
+    Args: None
+    Returns: returns list of artifacts for a specified repository
+    """
     data = 'items.find({"repo":{"$eq":"jcenter-cache"}})'
     results = []
     try:
@@ -24,10 +25,15 @@ def get_maven_artifacts():
 
 
 def get_file_stats_for_artifacts():
+    """
+    Gets the file stats that include download count for every artifact in the list of artifacts for maven repository
+    Args: None
+    Returns: Returns list of file stats with download count > 0
+    """
     artifacts = get_maven_artifacts()
     download_list = []
     for item in artifacts:
-        new_url = construct_url(item['repo'], item['path'], item['name'])
+        new_url = api_url.format('storage/{}?stats'.format(item['repo'] + '/' + item['path'] + '/' + item['name']))
         try:
             resp = requests.get(url=new_url, auth=HTTPBasicAuth(username, password), timeout=5)
             content = json.loads(resp.content)
@@ -40,16 +46,20 @@ def get_file_stats_for_artifacts():
 
 
 def get_most_popular_artifacts(artifacts_list):
-    sorted_list = sorted(artifacts_list, key=lambda i: (i.get('downloadCount'), i.get('lastDownloaded')), reverse=True)
+    """
+    Takes filtered artifacts_list as input and sorts them based on downloadCount
+    Args: artifacts_list (list)
+    Returns: top 2 artifacts with highest downloadCount
+    """
+    sorted_list = sorted(artifacts_list, key=lambda i: (i.get('downloadCount')), reverse=True)
     return sorted_list[0], sorted_list[1]
 
 
 def main():
     filtered_list = get_file_stats_for_artifacts()
     first, second = get_most_popular_artifacts(filtered_list)
-    print (first)
-    print (second)
     return first, second
+
 
 if __name__ == "__main__":
     main()
