@@ -14,7 +14,7 @@ def get_maven_artifacts():
     try:
         r = requests.post(url=config.api_url.format('search/aql/'), data=data, auth=HTTPBasicAuth(config.username, config.password))
     except Exception as e:
-        print "Exception is %s", e
+        print (e)
     results = json.loads(r.content)['results']
     return results
 
@@ -28,7 +28,7 @@ def get_file_stats_for_artifacts():
             resp = requests.get(url=new_url, auth=HTTPBasicAuth(config.username, config.password), timeout=5)
             content = json.loads(resp.content)
         except Exception as e:
-            print "Exception is %s", e
+            print (e)
             continue
         if content['downloadCount'] > 0:
             download_list.append(content)
@@ -43,8 +43,8 @@ def get_most_popular_artifacts(artifacts_list):
 def main():
     filtered_list = get_file_stats_for_artifacts()
     first, second = get_most_popular_artifacts(filtered_list)
-    print first
-    print second
+    print (first)
+    print (second)
 
 if __name__ == "__main__":
     main()
