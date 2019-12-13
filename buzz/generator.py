@@ -11,11 +11,12 @@ def construct_url(repo, path, name):
 
 def get_maven_artifacts():
     data = 'items.find({"repo":{"$eq":"jcenter-cache"}})'
+    results = []
     try:
         r = requests.post(url=config.api_url.format('search/aql/'), data=data, auth=HTTPBasicAuth(config.username, config.password))
+        results = json.loads(r.content)['results']
     except Exception as e:
         print (e)
-    results = json.loads(r.content)['results']
     return results
 
 
